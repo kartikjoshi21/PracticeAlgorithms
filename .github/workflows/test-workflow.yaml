@@ -1,0 +1,44 @@
+name: test-workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      cleanup:
+        description: Cleanup
+        required: true
+        default: true
+        type: boolean
+
+
+jobs:
+  build1:
+    runs-on: ubuntu-latest
+    steps:
+    - name: run lslrt
+      run: false
+
+  build2:
+    runs-on: ubuntu-latest
+    needs: [ build1 ]
+    steps:
+    - name: error
+      run: false
+
+  build3:
+    runs-on: ubuntu-latest
+    needs: [ build1, build2 ]
+    steps:
+    - name: run ls
+      run: false
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: 
+    - build1
+    - build2
+    - build3 
+    if: always() && inputs.cleanup
+    steps:
+    - name: run ls
+      run: |
+        echo "Runinng cleanup"
